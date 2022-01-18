@@ -1,45 +1,40 @@
 #pragma once
 #include "struktura.h"
-#include "mediana.h"
-#include "spausdinimas.h"
-#include <iomanip>
 #include <iostream>
+#include "spausdinimas.h"
+#include "mediana.h"
 
-using std::cout;
-using std::cin;
-using std::endl;
-using std::left;
-using std::setw;
+using namespace std;
 
-void pazymiuAutomatisPildymas(vector<studentas> grupeStudentu, bool pagalMediana);
-int random_sk();
+void rankinisPildymas(vector<studentas> grupeStudentu, bool pagalMediana);
 
-void pazymiuAutomatisPildymas(vector<studentas> grupeStudentu, bool pagalMediana) {
-    cout << "Iveskite studetu skaiciu: ";
-    int studentuSkaicius;
-    cin >> studentuSkaicius;
-
-    grupeStudentu.reserve(studentuSkaicius);
-
-    for (int i = 0; i < studentuSkaicius; i++) {
+void rankinisPildymas(vector<studentas> grupeStudentu, bool pagalMediana) {
+    
+    for (int i = 0; i < grupeStudentu.size(); i++) {
         float sum = 0, vid;
         studentas kint;
 
         cout << "Iveskite " << i + 1 << "-o studento varda ir pavarde: " << endl;
         cin >> kint.vard >> kint.pavard;
-        int pazymiuSkaicius; // paz sk.
+
+
+        int pazymiuSkaicius;
         cout << "Iveskite norima paz. skaiciu studentui" << " " << kint.vard << " " << kint.pavard << endl;
         cin >> pazymiuSkaicius;
 
-        kint.egzam = random_sk();
-        cout << "Random egzamino pazymys: " << kint.egzam << endl;
-
-        srand(time(0));
-        for (int x = 0; x < pazymiuSkaicius; x++) {
-            kint.nd.push_back(random_sk());
-            cout << "Random nd pazymys: " << kint.nd[x] << endl;
-            sum += kint.nd[x];
+        for (int i = 0; i < pazymiuSkaicius; i++) {
+            cout << "Iveskite pazymi (1-10):";
+            int pazimys;
+            cin >> pazimys;
+            while ((pazimys < 1) || (pazimys > 10)) {
+                cout << "Neteisingas pazymys, iveskite dar karta" << endl;
+                cin >> pazimys;
+            }
+            kint.nd.push_back(pazimys);
+            sum += kint.nd[i];
         }
+        cout << "Iveskite egzamino pazymi " << " " << kint.vard << " " << kint.pavard << endl;
+        cin >> kint.egzam;
 
         vid = sum / pazymiuSkaicius;
         kint.med = mediana(kint.nd);
@@ -47,6 +42,9 @@ void pazymiuAutomatisPildymas(vector<studentas> grupeStudentu, bool pagalMediana
             kint.gal = kint.med * 0.4 + 0.6 * kint.egzam;
         else
             kint.gal = vid * 0.4 + 0.6 * kint.egzam;
+
+
+
 
         grupeStudentu.push_back(kint);
 
@@ -64,9 +62,4 @@ void pazymiuAutomatisPildymas(vector<studentas> grupeStudentu, bool pagalMediana
     for (const auto& studentas : grupeStudentu) {
         printas(studentas);
     }
-}
-
-int random_sk() //sugeneruoja bet koki skaiciu nuo 1 iki 10
-{
-    return rand() % 10 + 1;
 }
